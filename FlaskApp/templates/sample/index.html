@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Home - Brand</title>
+
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/css/pikaday.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-white portfolio-navbar gradient">
+        <div class="container"><a class="navbar-brand logo" href="#">FiBro</a><button class="navbar-toggler"
+                data-bs-toggle="collapse"><span class="visually-hidden">Toggle navigation</span><span
+                    class="navbar-toggler-icon"></span></button></div>
+    </nav>
+    <main class="page lanidng-page">
+        <section class="portfolio-block block-intro">
+            <div class="container" style="width: 993px;">
+                <div class="table-responsive" style="border-style: none;">
+                    <form action="http://localhost:5000/send" method="POST" enctype="multipart/form-data">
+                        <table class="table">
+                            <thead>
+                                <tr></tr>
+                            </thead>
+                            <tbody style="width: 1266px;padding: 0px;">
+                                <!-- <tr>
+                                    <td style="border-style: none;text-align: left;">Patient Id</td>
+                                    <td style="width: 274.6px;border-style: none;"><input type="text"
+                                            style="border-radius: 5px;border-width: 1px;border-color: rgb(246,249,251);">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-style: none;text-align: left;">Sex</td>
+                                    <td style="border-style: none;">
+                                        <div class="dropdown"><button id="sex" class="btn btn-primary dropdown-toggle"
+                                                aria-expanded="false" data-bs-toggle="dropdown" type="button"
+                                                style="background: rgb(246,249,251);color: rgb(0,0,0);border-style: none;box-shadow: 0px 0px 5px var(--bs-table-striped-bg);border-radius: 5px;">Dropdown
+                                            </button>
+                                            <div class="dropdown-menu"><a class="dropdown-item"
+                                                    onclick="sexDropDown('Male')">Male</a><a class="dropdown-item"
+                                                    onclick="sexDropDown('Female')">Female</a></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="border-style: none;">
+                                    <td style="border-style: none;text-align: left;">Smoking Status</td>
+                                    <td style="border-style: none;">
+                                        <div class="dropdown"><button id="smokingStatus"
+                                                class="btn btn-primary dropdown-toggle" aria-expanded="false"
+                                                data-bs-toggle="dropdown" type="button"
+                                                style="background: rgb(246,249,251);color: rgb(0,0,0);border-style: none;border-radius: 5px;">
+                                            </button>
+                                            <div class="dropdown-menu"><a class="dropdown-item"
+                                                    onclick="smokeDropDown('Active')">Active</a><a class="dropdown-item"
+                                                    onclick="smokeDropDown('History')">Smoking history</a><a
+                                                    class="dropdown-item" onclick="smokeDropDown('Never')">Never
+                                                    smoked</a></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-style: none;text-align: left;">Age</td>
+                                    <td style="border-style: none;"><input type="number" name ="age"
+                                            style="border-radius: 8px;border-width: 1px;border-color: rgb(246,249,251);">
+                                    </td>
+                                </tr> -->
+                                <tr>
+                                    <td style="border-style: none;text-align: left;">File Upload</td>
+                                    <td style="border-style: none;"><input type="file" name="file"
+                                            style="border-radius: 4px;background: #e1d5d5;border-style: none;width: 269px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><input type="submit" /></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js"></script>
+    <script src="{{ url_for('static',filename='js/script.min.js')}}"></script>
+    <script src="{{ url_for('static',filename='js/script.js')}}"></script>
+
+</body>
+
+</html>
+
+<!-- <html>
+   <body>
+      <form action = "http://localhost:5000/send" method = "POST" 
+         enctype = "multipart/form-data">
+         <input type = "file" name = "file" />
+         <input type = "submit"/>
+      </form>   
+   </body>
+</html> -->
