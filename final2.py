@@ -26,26 +26,26 @@ This version runs on CPU, end-to-end. However, it is slow. Improvements/next ste
 use_TPU = False
 # use_TPU = True
 
-if use_TPU:
-    !curl https://raw.githubusercontent.com/pytorch/xla/master/contrib/scripts/env-setup.py -o pytorch-xla-env-setup.py
-    !python pytorch-xla-env-setup.py --version nightly --apt-packages libomp5 libopenblas-dev
+# if use_TPU:
+#     !curl https://raw.githubusercontent.com/pytorch/xla/master/contrib/scripts/env-setup.py -o pytorch-xla-env-setup.py
+#     !python pytorch-xla-env-setup.py --version nightly --apt-packages libomp5 libopenblas-dev
 
-if use_TPU:
-    import torch_xla
-    import torch_xla.debug.metrics as met
-    import torch_xla.distributed.parallel_loader as pl
-    import torch_xla.utils.utils as xu
-    import torch_xla.core.xla_model as xm
-    import torch_xla.distributed.xla_multiprocessing as xmp
-    import torch_xla.test.test_utils as test_utils
+# if use_TPU:
+#     import torch_xla
+#     import torch_xla.debug.metrics as met
+#     import torch_xla.distributed.parallel_loader as pl
+#     import torch_xla.utils.utils as xu
+#     import torch_xla.core.xla_model as xm
+#     import torch_xla.distributed.xla_multiprocessing as xmp
+#     import torch_xla.test.test_utils as test_utils
 
-    import warnings
-    warnings.filterwarnings("ignore")
+#     import warnings
+#     warnings.filterwarnings("ignore")
 
-if use_TPU:
-    !export XLA_USE_BF16=1
+# if use_TPU:
+#     !export XLA_USE_BF16=1
 
-!pip install pydicom
+# !pip install pydicom
 
 import copy
 from datetime import datetime, timedelta
@@ -76,17 +76,17 @@ import pytest
 from google.colab import drive
 drive.mount('/content/drive')
 
-!unzip "/content/drive/My Drive/PulmonaryFibrosis/archive_updated.zip" -d "/content/osic-cached-dataset/"
-!unzip "/content/drive/My Drive/PulmonaryFibrosis/osic-pulmonary-fibrosis-progression.zip" -d "/content/osic-pulmonary-fibrosis-progression/"
+# !unzip "/content/drive/My Drive/PulmonaryFibrosis/archive_updated.zip" -d "/content/osic-cached-dataset/"
+# !unzip "/content/drive/My Drive/PulmonaryFibrosis/osic-pulmonary-fibrosis-progression.zip" -d "/content/osic-pulmonary-fibrosis-progression/"
 
-!cp -r "/content/drive/My Drive/PulmonaryFibrosis/test" "/content/"
+# !cp -r "/content/drive/My Drive/PulmonaryFibrosis/test" "/content/"
 
-!cp  "/content/drive/My Drive/PulmonaryFibrosis/cached_osis/features_list.pkl" "/content/osic-cached-dataset/"
-!cp  "/content/drive/My Drive/PulmonaryFibrosis/cached_osis/tabular_test.csv" "/content/osic-cached-dataset/"
-!cp  "/content/drive/My Drive/PulmonaryFibrosis/cached_osis/tabular_train.csv" "/content/osic-cached-dataset/"
-!cp  "/content/drive/My Drive/PulmonaryFibrosis/cached_osis/tabular_val.csv" "/content/osic-cached-dataset/"
+# !cp  "/content/drive/My Drive/PulmonaryFibrosis/cached_osis/features_list.pkl" "/content/osic-cached-dataset/"
+# !cp  "/content/drive/My Drive/PulmonaryFibrosis/cached_osis/tabular_test.csv" "/content/osic-cached-dataset/"
+# !cp  "/content/drive/My Drive/PulmonaryFibrosis/cached_osis/tabular_train.csv" "/content/osic-cached-dataset/"
+# !cp  "/content/drive/My Drive/PulmonaryFibrosis/cached_osis/tabular_val.csv" "/content/osic-cached-dataset/"
 
-!unzip "/content/drive/My Drive/PulmonaryFibrosis/results.zip" -d "/content/results/"
+# !unzip "/content/drive/My Drive/PulmonaryFibrosis/results.zip" -d "/content/results/"
 
 root_dir = Path('/content/osic-pulmonary-fibrosis-progression')
 model_dir = Path('/content/working')
