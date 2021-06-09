@@ -1,9 +1,11 @@
 
 import os
+import zipfile
+
 from flask import Flask,render_template, flash, request, redirect, url_for
 from flask.helpers import send_file, send_from_directory
 from werkzeug.utils import secure_filename
-
+import model
 app = Flask(__name__)
 UPLOAD_FOLDER = './files/users'
 ALLOWED_EXTENSIONS = {'zip', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -26,7 +28,13 @@ def upload_file():
         f = request.files['file']
         if f and allowed_file(f.filename):
             f.save(os.path.join('./files/users', secure_filename(f.filename)))
-            return send_file(os.path.join('./files/users', secure_filename(f.filename)), as_attachment=True)
+            zf = zipfile.ZipFile('./files/users/'+secure_filename(f.filename), 'r')
+            filePath='./files/users/'+f.filename.rsplit('.', 1)[0].lower()
+            zf.extractall(filePath)
+            print(filePath)
+            model.saanam(filePath)
+
+            return send_file(os.path.join(filePath, 'submission.csv'), as_attachment=True)
     return 'Something went wrong'
 
     # print("enter")

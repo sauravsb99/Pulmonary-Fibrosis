@@ -271,7 +271,8 @@ class GenerateLatentFeatures:
             'target': sample['target']
         }
 
-def saanam():
+def saanam(cachePathString):
+    cachePath=Path(cachePathString)
     autoencoder = AutoEncoder()
     autoencoder.load_state_dict(torch.load(
         pretrained_ae_weigths,
@@ -284,7 +285,7 @@ def saanam():
     data = ClinicalDataset(
         root_dir=root_dir,
         ctscans_dir=root_dir/'test',
-        cache_dir=cache_dir,
+        cache_dir=cachePath,
         mode='test',
         transform=GenerateLatentFeatures(autoencoder, latent_dir)
     )
@@ -320,6 +321,6 @@ def saanam():
     df['FVC'] = df[quantiles[1]]
     df['Confidence'] = df[quantiles[2]] - df[quantiles[0]]
     df = df.drop(columns=list(quantiles))
-    df.to_csv('submission.csv', index=False)
-if __name__ == '__main__':
-    saanam()
+    df.to_csv(cachePath/'submission.csv', index=False)
+# if __name__ == '__main__':
+#     saanam('./files/osic-cached-dataset2')
