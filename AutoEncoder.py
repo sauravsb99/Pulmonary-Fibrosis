@@ -118,8 +118,6 @@ class CropBoundingBox:
     def __call__(self, sample):
         image, data = sample['image'], sample['metadata']
         if not self.bounding_box(image):
-            plt.imshow(image[14])
-            plt.show() 
             return sample
 
         mid_img = image[int(image.shape[0] / 2)]
@@ -145,6 +143,7 @@ class CropBoundingBox:
         f, axarr = plt.subplots(1,2)
         axarr[1].imshow(image[int(image.shape[0] / 2)])
         axarr[0].imshow(mid_img)
+        print("Crop BoundingBox")
         plt.show()
         return {'image': image, 'metadata': data}
 class ConvertToHU:
@@ -158,11 +157,12 @@ class ConvertToHU:
             warnings.warn(f'Patient {data.PatientID} CT Scan not cannot be'
                           f'converted to Hounsfield Units (HU).')
 
-        plt.imshow(image[12])
-        plt.show()
+        # plt.imshow(image[12])
+        # plt.show()
         intercept = data.RescaleIntercept
         slope = data.RescaleSlope
         image = (image * slope + intercept).astype(np.int16)
+        print("Conv to Hu")
         plt.imshow(image[12])
         plt.show()
         return {'image': image, 'metadata': data}
@@ -180,6 +180,8 @@ class Resize:
         print('resize_factor = ',resize_factor)
         axarr[1].imshow(image[0])
         axarr[0].imshow(img1[0])
+        print("Resize")
+
         plt.show()
         return {'image': image, 'metadata': data}
 class Clip:
@@ -195,6 +197,8 @@ class Clip:
         f, axarr = plt.subplots(1,2)
         axarr[1].imshow(image[0])
         axarr[0].imshow(img1[0])
+        print("Clip")
+
         plt.show()
         return {'image': image, 'metadata': data}
 class MaskWatershed:
@@ -219,6 +223,8 @@ class MaskWatershed:
         f, axarr = plt.subplots(1,2)
         axarr[1].imshow(np.stack(stack)[12])
         axarr[0].imshow(image[12])
+        print("finished watershed")
+
         plt.show()
         return {
             'image': np.stack(stack),
@@ -235,23 +241,22 @@ class MaskWatershed:
         sobel_filtered_dx = ndimage.sobel(image, 1)
         sobel_filtered_dy = ndimage.sobel(image, 0)
         sobel_gradient = np.hypot(sobel_filtered_dx, sobel_filtered_dy)
-        print('shape   ',sobel_gradient.shape)
-        plt.imshow(sobel_gradient)
-        plt.show()
+
         sobel_gradient *= 255.0 / np.max(sobel_gradient)
-        plt.imshow(sobel_gradient)
-        plt.show()    
+        # print('shape   ',sobel_gradient.shape)
+        # plt.imshow(sobel_gradient)
+        # plt.show()  
         watershed = morphology.watershed(sobel_gradient, marker_watershed)
-        print('shape   ',watershed.shape)
-        plt.imshow(watershed)
-        plt.show()
+        # print('shape morphology  ',watershed.shape)
+        # plt.imshow(watershed)
+        # plt.show()
 
         outline = ndimage.morphological_gradient(watershed, size=(3,3))
 
         outline = outline.astype(bool)
-        print('shape   ',outline.shape)
-        plt.imshow(outline)
-        plt.show()
+        # print('shape  Outline ',outline.shape)
+        # plt.imshow(outline)
+        # plt.show()
 
         # Structuring element used for the filter
         blackhat_struct = [[0, 0, 1, 1, 1, 0, 0],
@@ -268,16 +273,16 @@ class MaskWatershed:
         outline += ndimage.black_tophat(outline, structure=blackhat_struct)
 
         lungfilter = np.bitwise_or(marker_internal, outline)
-        plt.imshow(lungfilter)
-        plt.show()
-        lungfilter = ndimage.morphology.binary_closing(lungfilter, structure=np.ones((5,5)), iterations=3)
-        print('shape   ',lungfilter.shape)
 
-        plt.imshow(lungfilter)
-        plt.show()
+        lungfilter = ndimage.morphology.binary_closing(lungfilter, structure=np.ones((5,5)), iterations=3)
+        # print('lungfilter   ',lungfilter.shape)
+
+        # plt.imshow(lungfilter)
+        # plt.show()
         segmented = np.where(lungfilter == 1, image, min_hu * np.ones((h, w)))
         plt.imshow(segmented)
-        plt.show()
+        # print("Segmented")
+        # plt.show()
         return segmented  #, lungfilter, outline, watershed, sobel_gradient
 
     @staticmethod

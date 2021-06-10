@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Home - Brand</title>
+    <title>Home - Fibrosis</title>
 
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700">
@@ -14,9 +14,9 @@
 
 <body>
     <nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-white portfolio-navbar gradient">
-        <div class="container"><a class="navbar-brand logo" href="#">FiBro</a><button class="navbar-toggler"
-                data-bs-toggle="collapse"><span class="visually-hidden">Toggle navigation</span><span
-                    class="navbar-toggler-icon"></span></button></div>
+        <div class="container"><a class="navbar-brand logo" href="#">Pulmonary Fibrosis</a><button
+                class="navbar-toggler" data-bs-toggle="collapse"><span class="visually-hidden">Toggle
+                    navigation</span><span class="navbar-toggler-icon"></span></button></div>
     </nav>
     <main class="page lanidng-page">
         <section class="portfolio-block block-intro">
@@ -25,9 +25,11 @@
                     <form action="http://localhost:5000/send" method="POST" enctype="multipart/form-data">
                         <table class="table">
                             <thead>
-                                <tr></tr>
-                            </thead>
+                    <h4>Upload patient data</h4>
+                    <tr style="height: 40px;"></tr>
+                         </thead>
                             <tbody style="width: 1266px;padding: 0px;">
+
                                 <!-- <tr>
                                     <td style="border-style: none;text-align: left;">Patient Id</td>
                                     <td style="width: 274.6px;border-style: none;"><input type="text"
@@ -70,18 +72,20 @@
                                     </td>
                                 </tr> -->
                                 <tr>
-                                    <td style="border-style: none;text-align: left;">File Upload</td>
+                                    <td style="border-style: none;text-align: left;" >File Upload</td>
                                     <td style="border-style: none;"><input type="file" name="file"
-                                            style="border-radius: 4px;background: #e1d5d5;border-style: none;width: 269px;">
+                                            style="border-radius: 4px;background: #e1d5d5;border-style: none;width: 239px;">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td></td>
-                                    <td><input type="submit" /></td>
-                                    <td></td>
+
+                                    <td style="border-style: none;" width="200px"> </td>
+
                                 </tr>
                             </tbody>
                         </table>
+                        <div><button style="margin-left: 0vw;" type="submit"
+                            class="btn btn-primary">Submit</button></div>
                     </form>
                 </div>
             </div>

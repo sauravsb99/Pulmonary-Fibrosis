@@ -1,5 +1,6 @@
 import copy
 from datetime import datetime, timedelta
+from os import path
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np
@@ -24,6 +25,8 @@ from skimage.measure import label, regionprops
 from skimage.segmentation import clear_border
 import pytest
 
+import imgProcess
+
 root_dir = Path('./files/osic-pulmonary-fibrosis-progression')
 model_dir = Path('./files/working')
 pretrained_weigths_dir = Path('./files/test/pretrained_models')
@@ -33,7 +36,7 @@ latent_dir = Path('./files/results/latent')
 latent_dir.mkdir(exist_ok=True, parents=True)
 # num_kfolds = 5
 test_size=0.2
-batch_size = 42
+batch_size = 6
 learning_rate = 1e-3
 num_epochs = 20
 quantiles = (0.2, 0.5, 0.8)
@@ -91,9 +94,10 @@ class AutoEncoder(nn.Module):
         return x
 
 class ClinicalDataset(Dataset):
-    def __init__(self, root_dir, ctscans_dir, mode, transform=None,
+    def __init__(self, root_dir, ctscans_dir, mode, transform,
                  cache_dir=None):
         self.transform = transform
+        # self.transform2=transform2
         self.mode = mode
         self.ctscans_dir = Path(ctscans_dir)
         self.cache_dir = None if cache_dir is None else Path(cache_dir)
@@ -118,7 +122,7 @@ class ClinicalDataset(Dataset):
         sub = sub[['Patient', 'Weeks', 'Confidence', 'Patient_Week']]
         sub = sub.merge(chunk.drop('Weeks', axis=1), on="Patient")
 
-        tr['WHERE'] = 'train'
+        # tr['WHERE'] = 'train'
         chunk['WHERE'] = 'val'
         sub['WHERE'] = 'test'
         data = tr.append([chunk, sub])
@@ -184,6 +188,7 @@ class ClinicalDataset(Dataset):
         }
         if self.transform:
             sample = self.transform(sample)
+            # sample=self.transform2(sample)
         # print(sample)
         return sample
 
@@ -271,7 +276,8 @@ class GenerateLatentFeatures:
             'target': sample['target']
         }
 
-def saanam():
+def saanam(rawPathString):
+    rawPath=Path(rawPathString)
     autoencoder = AutoEncoder()
     autoencoder.load_state_dict(torch.load(
         pretrained_ae_weigths,
@@ -280,14 +286,37 @@ def saanam():
     device = torch.device('cpu')
     autoencoder.to(device)
     autoencoder.eval()
+    print(rawPath)
 
     data = ClinicalDataset(
-        root_dir=root_dir,
-        ctscans_dir=root_dir/'test',
-        cache_dir=cache_dir,
+    root_dir=rawPath,
+    ctscans_dir=rawPath/'test',
+    mode='test',
+    # transform2=GenerateLatentFeatures(autoencoder, latent_dir),
+    transform=transforms.Compose([
+        imgProcess.CropBoundingBox(),
+        imgProcess.ConvertToHU(),
+        imgProcess.Resize((40, 256, 256)),
+        imgProcess.Clip(bounds=(-1000, 500)),
+        imgProcess.Mask(method=imgProcess.MaskMethod.MORPHOLOGICAL, threshold=-500),
+        imgProcess.Normalize(bounds=(-1000, -500)),
+        imgProcess.ToTensor(),
+        imgProcess.ZeroCenter(pre_calculated_mean=0.029105728564346046)
+    ]))
+    cachedPath=Path(rawPathString+'/cache')
+    print("caching now")
+    data.cache(rawPathString+'/cache')
+    print("caching completed")
+
+    data = ClinicalDataset(
+        root_dir=rawPath,
+        ctscans_dir=rawPath/'test',
+        cache_dir=cachedPath,
         mode='test',
         transform=GenerateLatentFeatures(autoencoder, latent_dir)
     )
+
+    print("Dataset loaded")
 
     model = QuantModel().to(device)
     state_dict = torch.load(model_dir/'save.pth')
@@ -295,11 +324,15 @@ def saanam():
     models=[model]
 
     avg_preds = np.zeros((len(data), len(quantiles)))
-    print(len(data), len(quantiles),avg_preds)
+    # print(len(data), len(quantiles),avg_preds)
     for model in models:
+        print("Doin model thing")
         dataloader = DataLoader(data, batch_size=batch_size,shuffle=False, num_workers=2)
         preds = []
-        for batch in tqdm(dataloader):
+        i=0
+        for batch in dataloader:
+            i+=1
+            print("batch ",i,'/',len(dataloader))
             inputs1 = batch['tabular_features'].float()
             inputs1 = inputs1.to(device)
             inputs2 = batch['latent_features'].float()
@@ -320,6 +353,9 @@ def saanam():
     df['FVC'] = df[quantiles[1]]
     df['Confidence'] = df[quantiles[2]] - df[quantiles[0]]
     df = df.drop(columns=list(quantiles))
-    df.to_csv('submission.csv', index=False)
-if __name__ == '__main__':
-    saanam()
+    df.to_csv(rawPath/'submission.csv', index=False)
+
+
+# data.cache('./files/newCache')
+# if __name__ == '__main__':
+#     saanam('./files/users/pat_3')
